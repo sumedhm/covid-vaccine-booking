@@ -16,6 +16,23 @@ CAPTCHA_URL = "https://cdn-api.co-vin.in/api/v2/auth/getRecaptcha"
 OTP_PUBLIC_URL = "https://cdn-api.co-vin.in/api/v2/auth/public/generateOTP"
 OTP_PRO_URL = "https://cdn-api.co-vin.in/api/v2/auth/generateMobileOTP"
 
+
+DISTRICTS_A = [
+    {
+        "district_id": 338,
+        "district_name": "Balaghat",
+        "alert_freq": 440 + ((2 * 2) * 110),
+    },{
+        "district_id": 365,
+        "district_name": "Nagpur",
+        "alert_freq": 440 + ((2 * 3) * 110),
+    },{
+        "district_id": 119,
+        "district_name": "Durg",
+        "alert_freq": 440 + ((2 * 1) * 110),
+    }
+]
+
 WARNING_BEEP_DURATION = (1000, 5000)
 
 if os.getenv("BEEP") == "no":
@@ -808,6 +825,17 @@ def check_and_book(
                         }
                         print(f"Booking with info: {new_req}")
                         booking_status = book_appointment(request_header, new_req, mobile)
+
+                        new_req1 = {
+                            "beneficiaries": [
+                                "45937064854540"
+                            ],
+                            "dose": dose_num,
+                            "center_id": option["center_id"],
+                            "session_id": option["session_id"],
+                            "slot": selected_slot,
+                        }
+                        booking_status1 = book_appointment(request_header, new_req1, mobile)
                         # booking_status = book_appointment(request_header, new_req, mobile, captcha_automation)
                         # is token error ? If yes then break the loop by returning immediately
                         if booking_status == 0:
@@ -872,6 +900,7 @@ def get_pincodes():
 
 
 def get_districts(request_header):
+    return DISTRICTS_A
     """
     This function
         1. Lists all states, prompts to select one,
